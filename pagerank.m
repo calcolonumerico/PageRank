@@ -1,5 +1,6 @@
 function [R,OUT,IN] = pagerank(G)
-%UNTITLED Summary of this function goes here
+%pagerank La funzione implementa l'algoritmo PageRank di Google per
+%l'ordinamento dei siti web
 %   Detailed explanation goes here
 
 if(nargin~=1)
