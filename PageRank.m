@@ -87,50 +87,58 @@ function [R,OUT,IN] = PageRank(G)
 %       Iodice Ivano
 %       Vincenzo De Francesco
 
+%Controlli su input e output
  if(nargin~=1)
      error("Inserire come parametro di input la matrice G")
  end
-
+if(nargout~=3)
+    error("Inserire come parametri di output R, OUT, IN")
+end
  %Controlli sulla matrice
-    if(~ismatrix(G))
+ if(~ismatrix(G))
        error("Il primo input deve essere una matrice.")
-    elseif(~issparse(G)||isempty(G))
+ elseif(~issparse(G)||isempty(G))
        error("La matrice deve essere sparsa e non vuota.")
-    elseif(size(G,1)~=size(G,2))
+ elseif(size(G,1)~=size(G,2))
         error("La matrice deve essere quadrata.")
-    elseif(~islogical(G))
+ elseif(~islogical(G))
       error("Gli elementi della matrice devono essere logici.")
-    end
+ end
 
     p=0.85;
     n=size(G,1);
     e=ones(n,1);
    
     %Azzero la diagonale per evitare autoloop
-    G(logical(eye(n)))=0;
+   G=G.*~speye(n);
    
     %Calcolo outdegree e indegree
     c = sum(G,1);
-    OUT=full(c)';
-    IN=full(sum(G,2));
+    OUT=c';
+    IN=sum(G,2);
     
     %Inizializzo z
-    z = ((1-p)*(c~=0) + (c==0))/n; 
+    z = ((1-p)*(c~=0) + (c==0))/n;
     
     %Inizializzo D
     D=sparse(1,n);
     D(c~=0)=1./c(c~=0);
     
     %Inizializzo Rank
-    R=e/n;
-    R0=zeros(n,1);
+    R0=e/n;
+    R=p*G.*D*R0+e*(z*R0);
+    niter=1;
+    TOLX=10^-7;
+    val=TOLX*norm(R,Inf);
     
-    niter=0;
-    while(niter<200 && (norm(R-R0,Inf))>(10^-7)*norm(R0,Inf))
+    while(niter<200 && (norm(R-R0,Inf))>TOLX*norm(R0,Inf))
+        if(val>realmin)
+                TOLX=val;
+            else
+                TOLX=realmin;
+        end
         R0=R;
-        R=p*G.*D*R0+ones(n,1)*z*R0;
+        R=p*G.*D*R0+e*(z*R0);
         niter=niter+1;
     end
-
 end
-

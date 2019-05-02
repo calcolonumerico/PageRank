@@ -10,7 +10,7 @@
  %% Grafico struttura G e grafo associato
         figure(2)
         subplot(1,2,1)
-        G=G-spdiags(spdiags(G,0),0,length(G),length(G));
+        G=G.*~speye(size(G,1));
         spy(G);
         title('Matrice di connettività G');
         subplot(1,2,2)
