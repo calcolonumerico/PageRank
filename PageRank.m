@@ -105,8 +105,10 @@ function [R,OUT,IN] = PageRank(G)
     p=0.85;
     n=size(G,1);
     e=ones(n,1);
+   
     %Azzero la diagonale per evitare autoloop
-    G=G-spdiags(spdiags(G,0),0,n,n);
+    G(logical(eye(n)))=0;
+   
     %Calcolo outdegree e indegree
     c = sum(G,1);
     OUT=full(c)';
@@ -126,7 +128,7 @@ function [R,OUT,IN] = PageRank(G)
     niter=0;
     while(niter<200 && (norm(R-R0,Inf))>(10^-7)*norm(R0,Inf))
         R0=R;
-        R=0.85*G*D*R0+ones(n,1)*z*R0;
+        R=p*G.*D*R0+ones(n,1)*z*R0;
         niter=niter+1;
     end
 
