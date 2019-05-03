@@ -1,4 +1,7 @@
 %% Esecuzione dell'algoritmo PageRank
+     
+      %load repubblica.mat
+      %[U,G]=surfer('http://www.unina.it',50);
       load mathwork200.mat;
       [R, OUT, IN] = PageRank(G);
  %% Grafico a barre page rank

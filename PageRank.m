@@ -23,7 +23,7 @@ function [R,OUT,IN] = PageRank(G)
 % non è conforme alle specifiche del problema.
 % 
 % Accuratezza:
-%L'accuratezza dipende dal numero massimo di iterazioni e dalla tolleranza che sono settati 
+% L'accuratezza dipende dal numero massimo di iterazioni e dalla tolleranza che sono settati 
 % rispettivamente a 200 e 10^-7.
 %
 % Algoritmo
@@ -44,19 +44,19 @@ function [R,OUT,IN] = PageRank(G)
 %    .
 % OUT =
 % 
-%     20
-%     19
-%     19
-%     20
-%     20
+%    (1,1)       20
+%    (2,1)       19
+%    (3,1)       19
+%    (4,1)       20
+%    (5,1)       20
 %     .
 %     .
 % IN =
 % 
-%      0
-%     18
-%     16
-%     16
+%    (2,1)       18
+%    (3,1)       16
+%    (4,1)       16
+%    (5,1)       16
 %    .
 %    .
 %--------------------------------
@@ -65,27 +65,35 @@ function [R,OUT,IN] = PageRank(G)
 % 
 % R =
 % 
-%    0.063631444211992
-%    0.011005910489649
-%    0.010721130453865
-%    0.011005910489649
-%    
+%    0.060476030042693 
+%    0.009671544519183 
+%    0.009671544519183 
+%    0.009671544519183
+%    .
+%    .
 % OUT =
 % 
-%     32
-%      0
-%     32
-%      0
+%   (1,1) 33
+%   (3,1) 33
+%   (7,1) 19
+%   (8,1) 5
+%   .
+%   .
 %      
 % IN =
-% 
-%     34
-%      3
-%      2
-%      3
+%
+%   (1,1) 34
+%   (2,1) 2
+%   (3,1) 2
+%   (4,1) 2
+%   (5,1) 21
+%   .
+%   .
+%
 % Autori:
 %       Iodice Ivano
 %       Vincenzo De Francesco
+
 
 %Controlli su input e output
  if(nargin~=1)
@@ -101,7 +109,9 @@ end
        error("La matrice deve essere sparsa e non vuota.")
  elseif(size(G,1)~=size(G,2))
         error("La matrice deve essere quadrata.")
- elseif(~islogical(G))
+ elseif(size(G,1)<2)
+         error("La matrice deve essere almeno 2x2")
+  elseif(~islogical(G))
       error("Gli elementi della matrice devono essere logici.")
  end
 
@@ -130,7 +140,7 @@ end
     niter=1;
     TOLX=10^-7;
     val=TOLX*norm(R,Inf);
-    
+    A=p*G.*D;
     while(niter<200 && (norm(R-R0,Inf))>TOLX*norm(R0,Inf))
         if(val>realmin)
                 TOLX=val;
@@ -138,7 +148,7 @@ end
                 TOLX=realmin;
         end
         R0=R;
-        R=p*G.*D*R0+e*(z*R0);
+        R=A*R0+e*(z*R0);
         niter=niter+1;
     end
 end
